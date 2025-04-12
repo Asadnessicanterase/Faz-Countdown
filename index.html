@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to Faz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Poppins:wght@400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #4b6cb7, #182848, #4b6cb7);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-y: auto; /* Allow vertical scrolling */
+            padding: 2rem 0;
+        }
+        
+        .stars {
+            position: fixed; /* Fixed position so stars don't scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: twinkle 5s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.7; }
+        }
+        
+        .floating-objects {
+            position: fixed; /* Fixed position so floating objects don't scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .floating-object {
+            position: absolute;
+            color: #fff;
+            font-size: 20px;
+            animation: fall 8s ease-in infinite;
+            opacity: 0;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(41, 128, 185, 0.7), rgba(44, 62, 80, 0.7));
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            max-width: 90%;
+            width: 600px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .countdown-item {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(46, 204, 113, 0.3));
+            padding: 1rem;
+            border-radius: 10px;
+            min-width: 100px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .countdown-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        
+        .quote {
+            font-style: italic;
+            margin: 2rem 0;
+            padding: 1rem;
+            border-left: 4px solid #3498db;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(46, 204, 113, 0.2));
+            border-radius: 0 10px 10px 0;
+            text-align: center;
+        }
+        
+        .memory-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(52, 152, 219, 0.2));
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .memory-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #2ecc71, #3498db);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .memory-text {
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .password-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4b6cb7, #182848, #4b6cb7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .password-container {
+            background: linear-gradient(135deg, rgba(41, 128, 185, 0.7), rgba(44, 62, 80, 0.7));
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .password-container h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .password-container p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .password-input {
+            padding: 0.8rem 1rem;
+            border-radius: 5px;
+            border: 2px solid rgba(52, 152, 219, 0.7);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .password-input:focus {
+            border-color: #2ecc71;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+        
+        .password-button {
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .password-button:hover {
+            background: linear-gradient(to right, #2980b9, #27ae60);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hint {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .hint:hover {
+            color: #2ecc71;
+        }
+        
+        /* Weather widget */
+        .weather-widget {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(41, 128, 185, 0.3), rgba(142, 68, 173, 0.3));
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .weather-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .mood-tracker {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(155, 89, 182, 0.2));
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .mood-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #2ecc71, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .mood-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .mood-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mood-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .mood-selected {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.5), rgba(155, 89, 182, 0.5));
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .countdown {
+                gap: 0.5rem;
+            }
+            
+            .countdown-item {
+                min-width: 70px;
+                padding: 0.7rem;
+            }
+            
+            .countdown-value {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="floating-objects"></div>
+    
+    <div class="container">
+        <h1>Countdown to Faz</h1>
+        <p class="message">Looking forward to our next meeting. Counting down the days until July 1st.</p>
+        
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-value" id="days">--</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="hours">--</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="minutes">--</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="seconds">--</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="quote" id="quote">
+            "Good things come to those who wait."
+        </div>
+        
+        <div class="memory-container">
+            <div class="memory-title">Thoughts</div>
+            <p class="memory-text" id="memory">Looking forward to all the conversations we'll have.</p>
+        </div>
+        
+        <!-- Weather Widget -->
+        <div class="weather-widget">
+            <div class="weather-title">Days Until We Meet</div>
+            <div id="daysLeft" style="font-size: 1.8rem; margin: 0.5rem 0;">--</div>
+            <div id="weatherInfo" style="font-size: 0.9rem;">Loading weather info...</div>
+        </div>
+        
+        <!-- Mood Tracker -->
+        <div class="mood-tracker">
+            <div class="mood-title">How are you feeling today?</div>
+            <div class="mood-buttons">
+                <div class="mood-button" data-mood="excited"><i class="fas fa-grin-stars"></i></div>
+                <div class="mood-button" data-mood="happy"><i class="fas fa-smile"></i></div>
+                <div class="mood-button" data-mood="neutral"><i class="fas fa-meh"></i></div>
+                <div class="mood-button" data-mood="sad"><i class="fas fa-frown"></i></div>
+                <div class="mood-button" data-mood="tired"><i class="fas fa-tired"></i></div>
+            </div>
+            <p id="moodMessage" style="margin-top: 1rem; font-size: 0.9rem; min-height: 20px;"></p>
+        </div>
+        
+        <div class="footer">
+            See you soon!
+        </div>
+    </div>
+    
+    <div class="password-screen" id="passwordScreen">
+        <div class="password-container">
+            <h2>Private Countdown</h2>
+            <p>This countdown is just for us. Please enter the password to continue.</p>
+            <input type="password" id="passwordInput" class="password-input" placeholder="Enter password">
+            <button id="submitPassword" class="password-button">View Countdown</button>
+            <p class="hint" id="showHint">Need a hint?</p>
+            <p id="hintText" style="display: none; margin-top: 1rem; font-size: 0.9rem; color: #2ecc71;">The password is: spookie</p>
+        </div>
+    </div>
+
+    <script>
+        // Password protection
+        const correctPassword = "spookie"; // Changed password to spookie
+        const passwordScreen = document.getElementById('passwordScreen');
+        const submitPassword = document.getElementById('submitPassword');
+        const passwordInput = document.getElementById('passwordInput');
+        const showHint = document.getElementById('showHint');
+        const hintText = document.getElementById('hintText');
+        
+        showHint.addEventListener('click', function() {
+            hintText.style.display = hintText.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        submitPassword.addEventListener('click', checkPassword);
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        function checkPassword() {
+            const enteredPassword = passwordInput.value.toLowerCase();
+            if (enteredPassword === correctPassword) {
+                passwordScreen.style.display = 'none';
+                localStorage.setItem('passwordEntered', 'true');
+            } else {
+                passwordInput.style.borderColor = '#ff0000';
+                passwordInput.value = '';
+                passwordInput.placeholder = 'Incorrect password, try again';
+                setTimeout(() => {
+                    passwordInput.style.borderColor = 'rgba(52, 152, 219, 0.7)';
+                    passwordInput.placeholder = 'Enter password';
+                }, 1500);
+            }
+        }
+        
+        // Check if password was previously entered
+        if (localStorage.getItem('passwordEntered') === 'true') {
+            passwordScreen.style.display = 'none';
+        }
+        
+        // Countdown timer
+        const countdownDate = new Date("July 1, 2025 00:00:00").getTime();
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Make sure to update the DOM elements with the calculated values
+            document.getElementById("days").textContent = days;
+            document.getElementById("hours").textContent = hours;
+            document.getElementById("minutes").textContent = minutes;
+            document.getElementById("seconds").textContent = seconds;
+            document.getElementById("daysLeft").textContent = days + " days";
+            
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("days").textContent = "0";
+                document.getElementById("hours").textContent = "0";
+                document.getElementById("minutes").textContent = "0";
+                document.getElementById("seconds").textContent = "0";
+                document.querySelector(".message").innerHTML = "The day is here!";
+            }
+        }
+        
+        // Initialize the countdown immediately
+        updateCountdown();
+        // Update the countdown every second
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        
+        // Create stars
+        const starsContainer = document.querySelector('.stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 5}s`;
+            starsContainer.appendChild(star);
+        }
+        
+        // Create floating objects (paper planes, stars, etc.) that fall from top
+        const floatingObjectsContainer = document.querySelector('.floating-objects');
+        const floatingObjectTypes = [
+            '<i class="fas fa-paper-plane"></i>',
+            '<i class="fas fa-star"></i>',
+            '<i class="fas fa-moon"></i>',
+            '<i class="fas fa-cloud"></i>',
+            '<i class="fas fa-sun"></i>',
+            '<i class="fas fa-coffee"></i>',
+            '<i class="fas fa-music"></i>'
+        ];
+        
+        function createFloatingObject() {
+            const object = document.createElement('div');
+            object.classList.add('floating-object');
+            
+            // Random object type
+            const randomType = floatingObjectTypes[Math.floor(Math.random() * floatingObjectTypes.length)];
+            object.innerHTML = randomType;
+            
+            // Random position, size, and color - now starting from top
+            object.style.left = `${Math.random() * 100}%`;
+            object.style.top = '-20px'; // Start above the viewport
+            object.style.animationDuration = `${Math.random() * 10 + 8}s`;
+            object.style.fontSize = `${Math.random() * 15 + 10}px`;
+            
+            // Random color with gradient
+            const colors = ['#3498db', '#2ecc71', '#9b59b6', '#f1c40f', '#e74c3c', '#1abc9c'];
+            const randomColor1 = colors[Math.floor(Math.random() * colors.length)];
+            const randomColor2 = colors[Math.floor(Math.random() * colors.length)];
+            object.style.background = `linear-gradient(to right, ${randomColor1}, ${randomColor2})`;
+            object.style.webkitBackgroundClip = 'text';
+            object.style.backgroundClip = 'text';
+            object.style.color = 'transparent';
+            
+            floatingObjectsContainer.appendChild(object);
+            
+            setTimeout(() => {
+                object.remove();
+            }, 15000);
+        }
+        
+        setInterval(createFloatingObject, 800);
+        
+        // Quotes rotation - Updated with more thoughtful quotes
+        const quotes = [
+            "Distance means so little when someone means so much.",
+            "The best things in life are worth waiting for.",
+            "Anticipation is the heart's greatest joy.",
+            "Every moment we spend apart is one closer to when we'll be together.",
+            "The wait is difficult, but what awaits is worth it.",
+            "Counting down the days, looking forward to the moments.",
+            "Patience is not the ability to wait, but how you act while waiting.",
+            "The future holds exciting possibilities.",
+            "The distance between two hearts is not an obstacle, but a reminder of how strong true anticipation can be.",
+            "Sometimes the smallest step in the right direction ends up being the biggest step of your life.",
+            "The most beautiful discovery true friends make is that they can grow separately without growing apart.",
+            "Life is a journey, and I'm looking forward to the next chapter with you.",
+            "The best is yet to come.",
+            "Looking forward to creating memories worth waiting for."
+        ];
+        
+        const memories = [
+            "Looking forward to all the conversations we'll have.",
+            "Excited to learn more about you.",
+            "Can't wait to share stories and experiences.",
+            "Looking forward to creating new memories.",
+            "Curious about all the things we'll discover about each other.",
+            "Anticipating the adventures ahead.",
+            "Thinking about all the places we might go.",
+            "Wondering what our favorite shared activities will be.",
+            "Imagining all the laughs we'll share.",
+            "Excited to see what the future holds for us.",
+            "Looking forward to the simple moments together.",
+            "Eager to learn about your perspective on life.",
+            "Can't wait to share experiences and create memories.",
+            "Anticipating the joy of spending time together."
+        ];
+        
+        function changeQuote() {
+            const quoteElement = document.getElementById('quote');
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            quoteElement.innerHTML = `"${randomQuote}"`;
+        }
+        
+        function changeMemory() {
+            const memoryElement = document.getElementById('memory');
+            const randomMemory = memories[Math.floor(Math.random() * memories.length)];
+            memoryElement.innerHTML = randomMemory;
+        }
+        
+        setInterval(changeQuote, 10000);
+        setInterval(changeMemory, 15000);
+        
+        // Weather widget simulation
+        const weatherConditions = [
+            "Sunny and warm in both our cities today!",
+            "It's raining here, hope it's nicer where you are!",
+            "Perfect weather for thinking about our upcoming meeting.",
+            "Weather forecast: 100% chance of excitement as we get closer to meeting!",
+            "The skies are clear, just like our countdown path.",
+            "Weather patterns suggest optimal conditions for our meeting day.",
+            "Forecast predicts happiness with a chance of adventure when we meet.",
+            "Cloudy with a chance of missing you today.",
+            "Temperature rising as the countdown gets shorter!",
+            "Stormy weather can't dampen the excitement of seeing you soon.",
+            "Meteorologists predict a 100% chance of smiles when we meet.",
+            "The atmosphere is charged with anticipation!",
+            "Expect warm feelings and bright moments in the forecast.",
+            "Weather alert: High probability of butterflies in stomach as the date approaches.",
+            "Current conditions: Counting down with increasing excitement!",
+            "Visibility excellent - can clearly see our meeting day approaching!"
+        ];
+        
+        function updateWeather() {
+            const weatherInfo = document.getElementById('weatherInfo');
+            const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
+            weatherInfo.textContent = randomWeather;
+        }
+        
+        updateWeather();
+        setInterval(updateWeather, 30000);
+        
+        // Mood Tracker
+        const moodButtons = document.querySelectorAll('.mood-button');
+        const moodMessage = document.getElementById('moodMessage');
+        
+        const moodMessages = {
+            excited: "That's great! Your excitement is contagious!",
+            happy: "Happiness looks good on you! Keep smiling!",
+            neutral: "Taking things as they come - that's a good approach.",
+            sad: "It's okay to feel down sometimes. Tomorrow is a new day.",
+            tired: "Rest well! Self-care is important."
+        };
+        
+        moodButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove selected class from all buttons
+                moodButtons.forEach(btn => btn.classList.remove('mood-selected'));
+                
+                // Add selected class to clicked button
+                this.classList.add('mood-selected');
+                
+                // Show message based on mood
+                const mood = this.getAttribute('data-mood');
+                moodMessage.textContent = moodMessages[mood];
+                
+                // Save mood in localStorage
+                localStorage.setItem('currentMood', mood);
+            });
+        });
+        
+        // Check if mood was previously selected
+        const savedMood = localStorage.getItem('currentMood');
+        if (savedMood) {
+            const savedButton = document.querySelector(`.mood-button[data-mood="${savedMood}"]`);
+            if (savedButton) {
+                savedButton.classList.add('mood-selected');
+                moodMessage.textContent = moodMessages[savedMood];
+            }
+        }
+    </script>
+</body>
+</html>
